@@ -24,8 +24,11 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 export class ChallengeController {
   constructor(private readonly challengeService: ChallengeService) {}
 
-  @ApiResponse({ status: 201, description: 'The record has been  created successfully .'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been  created successfully .',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
   async createStudent(
     @Res() response,
@@ -40,7 +43,7 @@ export class ChallengeController {
       });
     } catch (err: any) {
       console.log(err);
-     
+
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
         message: 'Error: Challenge not created!',
@@ -49,8 +52,11 @@ export class ChallengeController {
     }
   }
 
-  @ApiResponse({ status: 201, description: 'The record has been updated successfully .'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been updated successfully .',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Put('/:id')
   async updateChallenge(
     @Res() response,
@@ -66,13 +72,16 @@ export class ChallengeController {
         message: 'Student has been successfully updated',
         existingStudent,
       });
-    } catch (err) {
+    } catch (err: any) {
       return response.status(err.status).json(err.response);
     }
   }
 
-  @ApiResponse({ status: 201, description: 'The record has been fetched successfully.'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been fetched successfully.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get()
   async getStudents(@Res() response) {
     try {
@@ -81,34 +90,46 @@ export class ChallengeController {
         message: 'All students data found successfully',
         studentData,
       });
-    } catch (err) {
+    } catch (err: any) {
       return response.status(err.status).json(err.response);
     }
   }
 
-  @ApiResponse({ status: 201, description: 'The open records has been successfully fetched.'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The open records has been successfully fetched.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('open')
   async findOpenChallenges() {
     return this.challengeService.getOpenChallenges();
   }
 
-  @ApiResponse({ status: 201, description: 'The ongoing records has been successfully fetched.'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The ongoing records has been successfully fetched.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('ongoing')
   async findOngoingChallenges() {
     return this.challengeService.getOngoingChallenges();
   }
 
-  @ApiResponse({ status: 201, description: 'The completed records has been successfully fetched.'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The completed records has been successfully fetched.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('completed')
   async findCompletedChallenges() {
     return this.challengeService.getCompletedChallenges();
   }
 
-  @ApiResponse({ status: 201, description: 'The specific record has been successfully fetched.'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The specific record has been successfully fetched.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('/:id')
   async getChallenge(@Res() response, @Param('id') challengeId: string) {
     try {
@@ -118,13 +139,16 @@ export class ChallengeController {
         message: 'Challenge found successfully',
         existingChallenge,
       });
-    } catch (err) {
+    } catch (err: any) {
       return response.status(err.status).json(err.response);
     }
   }
 
-  @ApiResponse({ status: 201, description: 'The specic  record has been successfully deleted.'})
-  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The specic  record has been successfully deleted.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Delete('/:id')
   async deleteChallenge(@Res() response, @Param('id') challengeId: string) {
     try {
@@ -134,7 +158,7 @@ export class ChallengeController {
         message: 'Student deleted successfully',
         deletedChallenge,
       });
-    } catch (err) {
+    } catch (err: any) {
       return response.status(err.status).json(err.response);
     }
   }

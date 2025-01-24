@@ -1,11 +1,37 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as moment from 'moment';
+import { threadId } from 'worker_threads';
 
 export type ChallengeDocument = Challenge & Document;
 
 @Schema()
 export class Challenge {
+  constructor(
+    title: string,
+    deadline: string,
+    duration: number,
+    moneyPrice: number,
+    contactEmail: string,
+    projectDescription: string,
+    projectBrief: string,
+    createdAt: Date,
+    tasks: string[],
+    category: string,
+    status: string,
+  ) {
+    this.title = title;
+    this.duration = duration;
+    this.deadline = deadline;
+    this.moneyPrice = moneyPrice;
+    this.contactEmail = contactEmail;
+    this.category = category;
+    this.projectDescription = projectDescription;
+    this.projectBrief = projectBrief;
+    this.createdAt = createdAt;
+    this.tasks = tasks;
+    this.status = status;
+  }
   @Prop({ required: true })
   title: string;
 
