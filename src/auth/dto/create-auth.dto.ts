@@ -5,6 +5,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { RoleEnum } from '../enums/role.enum';
 
 export class CreateAuthDto {
   @IsString()
@@ -14,9 +15,9 @@ export class CreateAuthDto {
   @IsNotEmpty()
   @IsStrongPassword()
   password: string;
-  @IsEnum(['admin', 'talent'])
+  @IsEnum(RoleEnum)
   @IsNotEmpty()
-  role: string;
+  role: RoleEnum;
   @IsString()
   @IsNotEmpty()
   @IsEmail()

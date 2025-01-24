@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { AuthService } from './services/auth.service';
+import { AuthController } from './controllers/auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from './auth.model';
+import { UserSchema } from './models/auth.model';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { PassportModule } from '@nestjs/passport';
+import { UserController } from './controllers/user.controller';
+import { UserService } from './services/user.service';
 dotenv.config();
 @Module({
   imports: [
@@ -16,7 +18,7 @@ dotenv.config();
     }),
     PassportModule,
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [AuthController, UserController],
+  providers: [AuthService, UserService],
 })
 export class AuthModule {}
