@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './auth.model';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
+import { PassportModule } from '@nestjs/passport';
 dotenv.config();
 @Module({
   imports: [
@@ -13,6 +14,7 @@ dotenv.config();
       secret: process.env.JWT_SECRET_KEY as string,
       signOptions: { expiresIn: '1d' },
     }),
+    PassportModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

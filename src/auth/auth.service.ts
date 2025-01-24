@@ -20,4 +20,12 @@ export class AuthService {
   async signup(createUserDto: CreateAuthDto) {
     const user = await this.userService.create(createUserDto);
   }
+  async validateUser(username: string, password: string) {
+    const user = await this.userService.findOne({ username, password });
+    if (user) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
 }
