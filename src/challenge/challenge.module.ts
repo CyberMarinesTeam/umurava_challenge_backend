@@ -1,13 +1,15 @@
 /* eslint-disable prettier/prettier */
 
 import { Module } from '@nestjs/common';
-import { ChallengeService } from './challenge.service';
-import { ChallengeController } from './challenge.controller';
+import { ChallengeService } from './services/challenge.service';
+import { ChallengeController } from './controllers/challenge.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ChallengeSchema } from './challenge.model';
+import { ChallengeSchema } from './models/challenge.model';
 
 @Module({
-  imports:[MongooseModule.forFeature([{ name: 'Challenge', schema: ChallengeSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: 'Challenge', schema: ChallengeSchema }]),
+  ],
   providers: [ChallengeService],
   controllers: [ChallengeController],
 })

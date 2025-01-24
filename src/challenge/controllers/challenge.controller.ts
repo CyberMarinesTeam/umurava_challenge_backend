@@ -14,10 +14,17 @@ import {
   Res,
   HttpStatus,
 } from '@nestjs/common';
-import { ChallengeService } from './challenge.service';
-import { UpdateChallengeDto } from './update-challenge.dto';
-import { CreateChallengeDto } from './create-challenge.dto';
+import { ChallengeService } from '../services/challenge.service';
+import { UpdateChallengeDto } from '../dto/update-challenge.dto';
+import { CreateChallengeDto } from '../dto/create-challenge.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ChallengeIdResponse,
+  CreateChallengeResponse,
+  DeleteChallengeIdResponse,
+  GetChallengesResponse,
+  UpdateChallengeResponse,
+} from '../dto/response.dto';
 
 @ApiTags('Challenge')
 @Controller('challenges')
@@ -26,11 +33,11 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The record has been  created successfully .',
+    type: CreateChallengeResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
-  async createStudent(
+  async createChallenge(
     @Res() response,
     @Body() createChallengeDto: CreateChallengeDto,
   ) {
@@ -54,7 +61,7 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The record has been updated successfully .',
+    type: UpdateChallengeResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Put('/:id')
@@ -64,13 +71,13 @@ export class ChallengeController {
     @Body() updateStudentDto: UpdateChallengeDto,
   ) {
     try {
-      const existingStudent = await this.challengeService.updateChallenge(
+      const Challenge = await this.challengeService.updateChallenge(
         studentId,
         updateStudentDto,
       );
       return response.status(HttpStatus.OK).json({
-        message: 'Student has been successfully updated',
-        existingStudent,
+        message: 'Challenge has been successfully updated',
+        Challenge,
       });
     } catch (err: any) {
       return response.status(err.status).json(err.response);
@@ -79,16 +86,16 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The record has been fetched successfully.',
+    type: GetChallengesResponse,
   })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 403, description: 'forbidden' })
   @Get()
-  async getStudents(@Res() response) {
+  async getChallenges(@Res() response) {
     try {
-      const studentData = await this.challengeService.getAllChallenges();
+      const Challenges = await this.challengeService.getAllChallenges();
       return response.status(HttpStatus.OK).json({
-        message: 'All students data found successfully',
-        studentData,
+        message: 'All Challenges data found successfully',
+        Challenges,
       });
     } catch (err: any) {
       return response.status(err.status).json(err.response);
@@ -97,7 +104,8 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The open records has been successfully fetched.',
+    type: CreateChallengeDto,
+    isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('open')
@@ -107,7 +115,8 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The ongoing records has been successfully fetched.',
+    type: CreateChallengeDto,
+    isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('ongoing')
@@ -117,7 +126,8 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The completed records has been successfully fetched.',
+    type: CreateChallengeDto,
+    isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('completed')
@@ -127,17 +137,16 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The specific record has been successfully fetched.',
+    type: ChallengeIdResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('/:id')
   async getChallenge(@Res() response, @Param('id') challengeId: string) {
     try {
-      const existingChallenge =
-        await this.challengeService.getChallenge(challengeId);
+      const Challenge = await this.challengeService.getChallenge(challengeId);
       return response.status(HttpStatus.OK).json({
         message: 'Challenge found successfully',
-        existingChallenge,
+        Challenge,
       });
     } catch (err: any) {
       return response.status(err.status).json(err.response);
@@ -146,7 +155,7 @@ export class ChallengeController {
 
   @ApiResponse({
     status: 201,
-    description: 'The specic  record has been successfully deleted.',
+    type: DeleteChallengeIdResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Delete('/:id')
@@ -155,7 +164,7 @@ export class ChallengeController {
       const deletedChallenge =
         await this.challengeService.deleteChallenge(challengeId);
       return response.status(HttpStatus.OK).json({
-        message: 'Student deleted successfully',
+        message: 'Challenge deleted successfully',
         deletedChallenge,
       });
     } catch (err: any) {

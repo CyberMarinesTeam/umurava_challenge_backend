@@ -13,8 +13,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
-    .setTitle('Challenges API Documentation')
-    .setDescription('Your API description')
+    .setTitle('Umurava Skills Challenge API Documentation')
+    .setDescription('Made by CyberMarineTeam')
     .setVersion('1.0')
     .addServer('http://localhost:3000/', 'Local environment')
     .addServer('https://staging.yourapi.com/', 'Staging')

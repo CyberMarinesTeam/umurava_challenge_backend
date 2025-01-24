@@ -5,11 +5,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Challenge } from './challenge.model';
+import { Challenge } from '../models/challenge.model';
 import { DateTime } from 'luxon';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateChallengeDto } from './update-challenge.dto';
+import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 @Injectable()
 export class ChallengeService {
   constructor(
