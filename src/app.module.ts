@@ -9,6 +9,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 
 import { ConfigModule } from '@nestjs/config';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConfigModule } from '@nestjs/config';
       host: 'localhost',
       port: 6379,
     }),
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [
