@@ -12,20 +12,24 @@ import {
 import { AuthService } from '../services/auth.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
 import { UpdateAuthDto } from '../dto/update-auth.dto';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
 import { AuthEntity } from '../entities/auth.entity';
 import { LoginBodyDto, LoginResponseDto } from '../dto/response.dto';
+import { AuthGuard } from '../guards/auth.guard';
+import { RolesGuard } from '../guards/role.guard';
+import { RoleEnum } from '../enums/role.enum';
+import { Roles } from '../guards/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @UseGuards(LocalAuthGuard)
+
+  
   @ApiCreatedResponse({ type: LoginResponseDto })
   @ApiBody({ type: LoginBodyDto })
   @Post('login')
-  login(@Request() req) {
-    return this.authService.login(req.user);
+ async login(@Body() loginBodyDto: LoginBodyDto, @Request() req) {
+    return await this.authService.login(loginBodyDto);
   }
   @ApiBody({ type: AuthEntity })
   @ApiCreatedResponse({ type: AuthEntity })
@@ -33,4 +37,14 @@ export class AuthController {
   signup(@Body() createUserDto: CreateAuthDto) {
     return this.authService.signup(createUserDto);
   }
+
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(RoleEnum.TALENT)
+@Get('admin')
+getAdminRoute(@Request() req) {
+  return { 
+    message: 'This route is for ADMIN only!',
+    user: req.user, // The authenticated user
+  };
+}
 }

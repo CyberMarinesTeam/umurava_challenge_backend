@@ -7,21 +7,25 @@ export class Users {
     username: string,
     email: string,
     password: string,
-    role: RoleEnum,
+    roles: RoleEnum[],
   ) {
     this.username = username;
     this.password = password;
     this.email = email;
-    this.role = role;
+    this.roles = roles;
   }
   @Prop({ required: true })
   username: string;
-  @Prop({ required: true })
+
+  @Prop({ required: true, unique: true })
   email: string;
+
   @Prop({ required: false })
   password: string;
-  @Prop({ enum: RoleEnum, required: true })
-  role: RoleEnum;
+
+  @Prop({ type: String, enum: Object.values(RoleEnum) , required: true })
+  roles: RoleEnum[];
 }
+
 
 export const UserSchema = SchemaFactory.createForClass(Users);

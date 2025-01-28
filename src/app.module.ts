@@ -7,14 +7,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+
+import { ConfigModule } from '@nestjs/config';
+
 @Module({
   imports: [
     ChallengeModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://dufitimana:theo123@cluster0.vuubo.mongodb.net/',
-      { dbName: 'skill_challengedb' },
-    ),
+    MongooseModule.forRoot(process.env.MONGO_URL as string, {
+      dbName: 'skill_challengedb',
+    }),
     AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath:'.env',
+    }),
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
@@ -23,6 +29,8 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+  ],
 })
 export class AppModule {}

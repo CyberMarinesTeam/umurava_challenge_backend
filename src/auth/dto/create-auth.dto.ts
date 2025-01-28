@@ -11,13 +11,15 @@ export class CreateAuthDto {
   @IsString()
   @IsNotEmpty()
   username: string;
+  
   @IsString()
   @IsNotEmpty()
-  @IsStrongPassword()
   password: string;
+
   @IsEnum(RoleEnum)
   @IsNotEmpty()
-  role: RoleEnum;
+  roles: RoleEnum[];
+
   @IsString()
   @IsNotEmpty()
   @IsEmail()

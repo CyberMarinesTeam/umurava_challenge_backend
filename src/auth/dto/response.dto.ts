@@ -12,7 +12,7 @@ export class LoginBodyDto {
     example: 'john doe',
     description: 'username',
   })
-  username: string;
+  email: string;
   @ApiProperty({
     example: 'johnDOE123',
     description: 'strong password',

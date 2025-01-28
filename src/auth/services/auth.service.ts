@@ -6,32 +6,54 @@ import { Model } from 'mongoose';
 import { Users } from '../models/auth.model';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
+import { LoginBodyDto } from '../dto/response.dto';
+interface validatedUserTypes  {
+  email: string,
+  username: string
+  roles: string[]
+}
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     @InjectModel('User') private userService: Model<Users>,
   ) {}
-  login(user: any) {
-    const payload = { usename: user.username, id: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async login(user: LoginBodyDto) {
+    const validatedUser = await this.validateUser(user.email, user.password);
+  
+    if (validatedUser?.email && validatedUser?.username && validatedUser?.roles) {
+      const payload = {
+        email: validatedUser.email,
+        username: validatedUser.username,
+        roles: validatedUser.roles,
+      };
+  
+      return {
+        accessToken: this.jwtService.sign(payload), // Sign the payload
+      };
+    } else {
+      throw new Error('Invalid credentials');
+    }
   }
+  
   async signup(createUserDto: CreateAuthDto) {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userService.create(createUserDto);
     return user;
   }
-  async validateUser(username: string, password: string) {
-    const user = await this.userService.findOne({ username, password });
+  async validateUser(email: string, plainPassword: string) {
+    const user = await this.userService.findOne({ email  });
     if (user) {
-      const { password, ...result } = user;
-      const ismatch = await bcrypt.compare(password, user.password);
+      const { password,username, email, roles } = user;
+      const ismatch = await bcrypt.compare(plainPassword, user.password);
       if (ismatch) {
-        return result;
+        return { email, username, roles };
+      }else {
+       console.log("passwords not match")
+       throw new Error("passwords not match")
       }
+    }else {
+      return null
     }
-    return null;
   }
 }
