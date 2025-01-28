@@ -11,7 +11,7 @@ export class Notification extends Document {
   @Prop({ required: true })
   message: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: false })
   user: Users;
 }
 
