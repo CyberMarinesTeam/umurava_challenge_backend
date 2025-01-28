@@ -13,7 +13,7 @@ export class UserController {
 
   
   @ApiOkResponse({ type: AuthEntity })
-  @Get(':id')
+  @Get('user/:id')
   async getUser(@Param('id') id: string) {
     const user = await this.userService.getUser(id);
     return user;
