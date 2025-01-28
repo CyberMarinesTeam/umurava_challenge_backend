@@ -4,20 +4,24 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Challenge } from '../models/challenge.model';
 import { DateTime } from 'luxon';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 @Injectable()
 export class ChallengeService {
   constructor(
     @InjectModel('Challenge') private challengeModel: Model<Challenge>,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   async getChallengesByStatus(status: string): Promise<Challenge[]> {
     const challenges = await this.challengeModel.find({ status }).exec();
+
     if (!challenges || challenges.length === 0) {
       throw new NotFoundException(`No challenges found with status: ${status}`);
     }
@@ -25,23 +29,26 @@ export class ChallengeService {
   }
 
   async getOpenChallenges(): Promise<Challenge[]> {
-    return this.getChallengesByStatus('open');
+    const challenges = await this.getChallengesByStatus('open');
+    return challenges;
   }
 
   async getOngoingChallenges(): Promise<Challenge[]> {
-    return this.getChallengesByStatus('ongoing');
+    const challenges = await this.getChallengesByStatus('ongoing');
+    return challenges;
   }
 
   async getCompletedChallenges(): Promise<Challenge[]> {
-    return this.getChallengesByStatus('completed');
+    const challenges = await this.getChallengesByStatus('completed');
+    return challenges;
   }
 
   async getAllChallenges(): Promise<Challenge[]> {
-    const studentData = await this.challengeModel.find();
-    if (!studentData || studentData.length == 0) {
+    const challenges = await this.challengeModel.find();
+    if (!challenges || challenges.length == 0) {
       throw new NotFoundException('Challenges data not found!');
     }
-    return studentData;
+    return challenges;
   }
 
   async getChallenge(challengeId: string): Promise<Challenge> {

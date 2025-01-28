@@ -13,6 +13,7 @@ import {
   Delete,
   Res,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ChallengeService } from '../services/challenge.service';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
@@ -25,6 +26,7 @@ import {
   GetChallengesResponse,
   UpdateChallengeResponse,
 } from '../dto/response.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Challenge')
 @Controller('challenges')
@@ -89,6 +91,7 @@ export class ChallengeController {
     type: GetChallengesResponse,
   })
   @ApiResponse({ status: 403, description: 'forbidden' })
+  @UseInterceptors(CacheInterceptor)
   @Get()
   async getChallenges(@Res() response) {
     try {
@@ -108,6 +111,7 @@ export class ChallengeController {
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UseInterceptors(CacheInterceptor)
   @Get('open')
   async findOpenChallenges() {
     return this.challengeService.getOpenChallenges();
@@ -119,6 +123,7 @@ export class ChallengeController {
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UseInterceptors(CacheInterceptor)
   @Get('ongoing')
   async findOngoingChallenges() {
     return this.challengeService.getOngoingChallenges();
@@ -130,6 +135,7 @@ export class ChallengeController {
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UseInterceptors(CacheInterceptor)
   @Get('completed')
   async findCompletedChallenges() {
     return this.challengeService.getCompletedChallenges();
@@ -140,6 +146,7 @@ export class ChallengeController {
     type: ChallengeIdResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UseInterceptors(CacheInterceptor)
   @Get('/:id')
   async getChallenge(@Res() response, @Param('id') challengeId: string) {
     try {
