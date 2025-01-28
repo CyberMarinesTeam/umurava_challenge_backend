@@ -14,7 +14,6 @@ export class Users {
     this.email = email;
     this.roles = roles;
   }
-
   @Prop({ required: true })
   username: string;
 

@@ -5,8 +5,9 @@ import { AppService } from './app.service';
 import { ChallengeModule } from './challenge/challenge.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth/guards/role.guard';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
+
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -19,6 +20,12 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath:'.env',
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
     }),
   ],
   controllers: [AppController],
