@@ -7,7 +7,7 @@ import { AuthEntity } from '../entities/auth.entity';
 export class UserController {
   constructor(private userService: UserService) {}
   @ApiOkResponse({ type: AuthEntity })
-  @Get(':id')
+  @Get('user/:id')
   async getUser(@Param('id') id: string) {
     const user = await this.userService.getUser(id);
     return user;
