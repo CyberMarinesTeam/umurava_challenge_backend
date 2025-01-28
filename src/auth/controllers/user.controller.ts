@@ -3,7 +3,7 @@ import { UserService } from '../services/user.service';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { AuthEntity } from '../entities/auth.entity';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
   @ApiOkResponse({ type: AuthEntity })
@@ -12,8 +12,9 @@ export class UserController {
     const user = await this.userService.getUser(id);
     return user;
   }
+  
   @ApiOkResponse({ type: AuthEntity, isArray: true })
-  @Get('users')
+  @Get()
   async getUsers() {
     return this.userService.getUsers();
   }

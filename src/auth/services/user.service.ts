@@ -5,9 +5,9 @@ import { Users } from '../models/auth.model';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private userService: Model<Users>) {}
+  constructor(@InjectModel('User') private userModel: Model<Users>) {}
   async getUser(id: string) {
-    const user = await this.userService.findById(id);
+    const user = await this.userModel.findById(id);
     if (user) {
       return user;
     } else {
@@ -15,11 +15,20 @@ export class UserService {
     }
   }
   async getUsers() {
-    const users = await this.userService.find();
+    const users = await this.userModel.find();
     if (users) {
       return users;
     } else {
       return new NotFoundException('no users found');
+    }
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.userModel.findByIdAndDelete(id);
+    if (user) {
+      return user;
+    } else {
+      return new NotFoundException('user not found');
     }
   }
 }
