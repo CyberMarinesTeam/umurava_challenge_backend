@@ -16,7 +16,7 @@ export class CreateAuthDto {
   @IsNotEmpty()
   password: string;
 
-  @IsEnum(RoleEnum)
+  @IsEnum(RoleEnum, { each: true })
   @IsNotEmpty()
   roles: RoleEnum[];
 

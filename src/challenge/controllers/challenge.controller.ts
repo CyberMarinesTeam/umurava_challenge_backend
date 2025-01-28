@@ -1,8 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -14,6 +9,7 @@ import {
   Res,
   HttpStatus,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { ChallengeService } from '../services/challenge.service';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
@@ -27,12 +23,18 @@ import {
   UpdateChallengeResponse,
 } from '../dto/response.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RolesGuard } from 'src/auth/guards/role.guard';
+import { Roles } from 'src/auth/guards/roles.decorator';
+import { RoleEnum } from 'src/auth/enums/role.enum';
 
 @ApiTags('Challenge')
 @Controller('challenges')
 export class ChallengeController {
   constructor(private readonly challengeService: ChallengeService) {}
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @ApiResponse({
     status: 201,
     type: CreateChallengeResponse,
@@ -61,6 +63,8 @@ export class ChallengeController {
     }
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @ApiResponse({
     status: 201,
     type: UpdateChallengeResponse,
@@ -86,6 +90,8 @@ export class ChallengeController {
     }
   }
 
+
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     type: GetChallengesResponse,
@@ -117,6 +123,7 @@ export class ChallengeController {
     return this.challengeService.getOpenChallenges();
   }
 
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     type: CreateChallengeDto,
@@ -129,6 +136,7 @@ export class ChallengeController {
     return this.challengeService.getOngoingChallenges();
   }
 
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     type: CreateChallengeDto,
@@ -141,6 +149,7 @@ export class ChallengeController {
     return this.challengeService.getCompletedChallenges();
   }
 
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     type: ChallengeIdResponse,
@@ -160,6 +169,8 @@ export class ChallengeController {
     }
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @ApiResponse({
     status: 201,
     type: DeleteChallengeIdResponse,

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Users } from '../models/auth.model';
+import { RoleEnum } from '../enums/role.enum';
 
 @Injectable()
 export class UserService {
@@ -31,4 +32,31 @@ export class UserService {
       return new NotFoundException('user not found');
     }
   }
+
+  async findParticipants() {
+   try {
+    const talents = await this.userModel.find({ roles: "talent" });
+    if(talents.length > 0){
+      return talents;
+    }else {
+      return new NotFoundException('no talents found');
+    }
+   }catch (error) {
+    console.log(error);
+   
+  }
+}
+  async findAdmins() {
+   try {
+    const talents = await this.userModel.find({ roles: "admin" });
+    if(talents.length > 0){
+      return talents;
+    }else {
+      return new NotFoundException('no talents found');
+    }
+   }catch (error) {
+    console.log(error);
+   
+  }
+}
 }

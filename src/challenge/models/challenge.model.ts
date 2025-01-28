@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as moment from 'moment';
-import { threadId } from 'worker_threads';
 
 export type ChallengeDocument = Challenge & Document;
 
@@ -13,12 +12,13 @@ export class Challenge {
     duration: number,
     moneyPrice: number,
     contactEmail: string,
-    projectDescription: string,
     projectBrief: string,
     createdAt: Date,
-    tasks: string[],
     category: string,
     status: string,
+    requirements: string[],
+    product_design: string[],
+    deliverables: string[],
   ) {
     this.title = title;
     this.duration = duration;
@@ -26,11 +26,12 @@ export class Challenge {
     this.moneyPrice = moneyPrice;
     this.contactEmail = contactEmail;
     this.category = category;
-    this.projectDescription = projectDescription;
     this.projectBrief = projectBrief;
     this.createdAt = createdAt;
-    this.tasks = tasks;
     this.status = status;
+    this.deliverables = deliverables;
+    this.requirements = requirements;
+    this.product_design = product_design;
   }
   @Prop({ required: true })
   title: string;
@@ -48,16 +49,19 @@ export class Challenge {
   contactEmail: string;
 
   @Prop({ required: true })
-  projectDescription: string;
-
-  @Prop({ required: true })
   projectBrief: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;
 
   @Prop({ type: [String], required: true })
-  tasks: string[];
+  requirements: string[];
+
+  @Prop({ type: [String], required: true })
+  product_design: string[];
+
+  @Prop({ type: [String], required: true })
+  deliverables: string[];
 
   @Prop({ required: true })
   category: string;

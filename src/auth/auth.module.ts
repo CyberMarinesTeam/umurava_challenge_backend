@@ -23,6 +23,6 @@ dotenv.config();
   ],
   controllers: [AuthController, UserController],
   providers: [AuthService, UserService, JwtStrategy, AuthGuard, RolesGuard],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule, AuthGuard, RolesGuard],
 })
 export class AuthModule {}

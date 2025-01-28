@@ -50,23 +50,31 @@ export class CreateChallengeDto {
   })
   @IsString()
   @IsNotEmpty()
-  projectDescription: string;
-
-  @ApiProperty({
-    example: 'brief about this project',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
   projectBrief: string;
 
   @ApiProperty({
-    example: '[task1, task2, task3, task4]',
+    example: '[requirement1, requirement2, requirement3, requirement4]',
     required: true,
   })
   @IsArray()
   @IsString({ each: true })
-  tasks: string[];
+  requirements: string[];
+
+  @ApiProperty({
+    example: '[product_design1, product_design2, product_design3, product_design4]',
+    required: true,
+  })
+  @IsArray()
+  @IsString({ each: true })
+  product_design: string[];
+
+  @ApiProperty({
+    example: '[deliverable1, deliverable2, deliverable3, deliverable4]',
+    required: true,
+  })
+  @IsArray()
+  @IsString({ each: true })
+  deliverables: string[];
 
   @ApiProperty({
     example: 'development',
