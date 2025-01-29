@@ -29,6 +29,7 @@ export class NotificationGateway {
       isRead: false,
     });
     if (client) {
+      console.log(message, ' message');
       return await client.emit('notification', message);
     }
   }
@@ -39,6 +40,7 @@ export class NotificationGateway {
       { $set: { isRead: true } },
     );
     if (updated && client) {
+      console.log('notification updated successfully message');
       return client.emit('notification-read', {
         message: 'notification updated successfully',
       });

@@ -4,13 +4,22 @@ import { Module } from '@nestjs/common';
 import { ChallengeService } from './services/challenge.service';
 import { ChallengeController } from './controllers/challenge.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ChallengeSchema } from './models/challenge.model';
+import { Challenge, ChallengeSchema } from './models/challenge.model';
 import { AuthModule } from 'src/auth/auth.module';
 import { NotificationModule } from 'src/notification/notification.module';
+import { Users, UserSchema } from 'src/auth/models/auth.model';
+import {
+  Participant,
+  ParticipantSchema,
+} from '../participants/models/participants.model';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'Challenge', schema: ChallengeSchema }]),
+    MongooseModule.forFeature([
+      { name: Challenge.name, schema: ChallengeSchema },
+      { name: Users.name, schema: UserSchema },
+      { name: Participant.name, schema: ParticipantSchema },
+    ]),
     AuthModule,
     NotificationModule,
   ],

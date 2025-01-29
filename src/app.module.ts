@@ -10,6 +10,7 @@ import * as redisStore from 'cache-manager-redis-store';
 
 import { ConfigModule } from '@nestjs/config';
 import { NotificationModule } from './notification/notification.module';
+import { ParticipantModule } from './participants/participants.module';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { NotificationModule } from './notification/notification.module';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath:'.env',
+      envFilePath: '.env',
     }),
     CacheModule.register({
       isGlobal: true,
@@ -29,10 +30,9 @@ import { NotificationModule } from './notification/notification.module';
       port: 6379,
     }),
     NotificationModule,
+    ParticipantModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
