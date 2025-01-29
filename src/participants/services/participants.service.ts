@@ -37,12 +37,12 @@ export class ParticipantsService {
     }
     // Check if the user is already participating
     const existingParticipant = await this.participantModel.findOne({
-      userId,
-      challengeId,
+      user: userId,
+      challenge: challengeId,
     });
     if (existingParticipant) {
       throw new ConflictException(
-        'User is already participating in this challenge',
+        'User or challenge is already participating in this challenge',
       );
     }
     // Create a new participant entry
