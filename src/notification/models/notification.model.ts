@@ -1,4 +1,3 @@
-// notification.schema.ts
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Users } from 'src/auth/models/auth.model';

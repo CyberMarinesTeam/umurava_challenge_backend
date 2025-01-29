@@ -27,11 +27,15 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/guards/roles.decorator';
 import { RoleEnum } from 'src/auth/enums/role.enum';
+import { NotificationGateway } from 'src/notification/gateways/notification.gateway';
 
 @ApiTags('Challenge')
 @Controller('challenges')
 export class ChallengeController {
-  constructor(private readonly challengeService: ChallengeService) {}
+  constructor(
+    private readonly challengeService: ChallengeService,
+    private readonly notificationGateway: NotificationGateway,
+  ) {}
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleEnum.ADMIN)
@@ -44,10 +48,15 @@ export class ChallengeController {
   async createChallenge(
     @Res() response,
     @Body() createChallengeDto: CreateChallengeDto,
+    @Body() userId: string,
   ) {
     try {
       const newChallenge =
         await this.challengeService.createChallenge(createChallengeDto);
+      await this.notificationGateway.sendNotification(
+        userId,
+        'Challenge has been created successfully',
+      );
       return response.status(HttpStatus.CREATED).json({
         message: 'Challenge has been created successfully',
         newChallenge,
@@ -75,11 +84,16 @@ export class ChallengeController {
     @Res() response,
     @Param('id') studentId: string,
     @Body() updateStudentDto: UpdateChallengeDto,
+    @Body() userId: string,
   ) {
     try {
       const Challenge = await this.challengeService.updateChallenge(
         studentId,
         updateStudentDto,
+      );
+      await this.notificationGateway.sendNotification(
+        userId,
+        'Challenge has been successfully updated',
       );
       return response.status(HttpStatus.OK).json({
         message: 'Challenge has been successfully updated',
@@ -89,7 +103,6 @@ export class ChallengeController {
       return response.status(err.status).json(err.response);
     }
   }
-
 
   @UseGuards(AuthGuard)
   @ApiResponse({
@@ -176,11 +189,19 @@ export class ChallengeController {
     type: DeleteChallengeIdResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Delete('/:id')
-  async deleteChallenge(@Res() response, @Param('id') challengeId: string) {
+  @Delete('/:id/:userId')
+  async deleteChallenge(
+    @Res() response,
+    @Param('id') challengeId: string,
+    @Param('userId') userId: string,
+  ) {
     try {
       const deletedChallenge =
         await this.challengeService.deleteChallenge(challengeId);
+      await this.notificationGateway.sendNotification(
+        userId,
+        'Challenge deleted successfully',
+      );
       return response.status(HttpStatus.OK).json({
         message: 'Challenge deleted successfully',
         deletedChallenge,

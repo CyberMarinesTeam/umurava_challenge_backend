@@ -21,22 +21,24 @@ export class NotificationGateway {
   async sendNotification(
     userId: string,
     message: string,
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client?: Socket,
   ) {
     await this.notificationModel.create({
       user: userId,
       message,
       isRead: false,
     });
-    return await client.emit('notification', message);
+    if (client) {
+      return await client.emit('notification', message);
+    }
   }
   @SubscribeMessage('read')
-  async notificationRead(@ConnectedSocket() client: Socket) {
+  async notificationRead(@ConnectedSocket() client?: Socket) {
     const updated = await this.notificationModel.updateMany(
       {},
       { $set: { isRead: true } },
     );
-    if (updated) {
+    if (updated && client) {
       return client.emit('notification-read', {
         message: 'notification updated successfully',
       });
