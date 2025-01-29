@@ -12,6 +12,7 @@ import {
   Participant,
   ParticipantSchema,
 } from '../participants/models/participants.model';
+import { Cache } from '@nestjs/cache-manager';
 
 @Module({
   imports: [

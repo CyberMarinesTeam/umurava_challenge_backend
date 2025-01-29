@@ -1,4 +1,3 @@
-
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Challenge } from '../models/challenge.model';
 import { DateTime } from 'luxon';
