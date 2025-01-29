@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UseInterceptors,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import { ChallengeService } from '../services/challenge.service';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
@@ -22,17 +23,19 @@ import {
   GetChallengesResponse,
   UpdateChallengeResponse,
 } from '../dto/response.dto';
-import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CACHE_MANAGER, CacheInterceptor } from '@nestjs/cache-manager';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/guards/roles.decorator';
 import { RoleEnum } from 'src/auth/enums/role.enum';
 import { NotificationGateway } from 'src/notification/gateways/notification.gateway';
+import { Cache } from 'cache-manager';
 
 @ApiTags('Challenge')
 @Controller('challenges')
 export class ChallengeController {
   constructor(
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly challengeService: ChallengeService,
     private readonly notificationGateway: NotificationGateway,
   ) {}
@@ -110,16 +113,19 @@ export class ChallengeController {
     type: GetChallengesResponse,
   })
   @ApiResponse({ status: 403, description: 'forbidden' })
-  @UseInterceptors(CacheInterceptor)
   @Get()
   async getChallenges(@Res() response) {
     try {
-      const challenges = await this.challengeService.getAllChallenges();
-      const serializedChallenges = JSON.parse(JSON.stringify(challenges)); // Convert to plain objects
+
+      const Challenges = await this.challengeService.getAllChallenges();
+      await this.cacheManager.set(
+        'challenges',
+        JSON.parse(JSON.stringify(Challenges)),
+      );
 
       return response.status(HttpStatus.OK).json({
         message: 'All Challenges data found successfully',
-        Challenges: serializedChallenges,
+        Challenges: Challenges,
       });
     } catch (err: any) {
       return response.status(err.status).json(err.response);
