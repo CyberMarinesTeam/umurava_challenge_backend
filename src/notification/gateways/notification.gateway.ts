@@ -5,7 +5,6 @@ import {
   WebSocketServer,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { NotificationService } from '../services/notification.service';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import { UpdateNotificationDto } from '../dto/update-notification.dto';
 import { Server, Socket } from 'socket.io';
@@ -15,7 +14,6 @@ import { Model } from 'mongoose';
 @WebSocketGateway({ cors: '*' })
 export class NotificationGateway {
   constructor(
-    private readonly notificationService: NotificationService,
     @InjectModel('Notification') private notificationModel: Model<Notification>,
   ) {}
   @WebSocketServer()
@@ -42,6 +40,16 @@ export class NotificationGateway {
       return client.emit('notification-read', {
         message: 'notification updated successfully',
       });
+    }
+  }
+  @SubscribeMessage('broadcast')
+  async BroadCastMessage(message: string) {
+    const broadcastNotification = await this.notificationModel.create({
+      message,
+      isRead: false,
+    });
+    if (broadcastNotification) {
+      return this.server.emit('broadcast-message', message);
     }
   }
 }
