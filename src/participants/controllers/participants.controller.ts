@@ -13,6 +13,7 @@ export class ParticipantsController {
     @Param('userId') userId: string,
     @Param('challengeId') challengeId: string,
   ): Promise<Participant> {
-    return this.participantsService.startChallenge(userId, challengeId);
+    console.log(userId, 'and', challengeId);
+    return await this.participantsService.startChallenge(userId, challengeId);
   }
 }

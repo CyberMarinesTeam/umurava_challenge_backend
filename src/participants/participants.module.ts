@@ -14,7 +14,7 @@ import {
   imports: [
     MongooseModule.forFeature([
       { name: Participant.name, schema: ParticipantSchema },
-      { name: Users.name, schema: UserSchema }, // Ensure Users is also available
+      { name: Users.name, schema: UserSchema },
       { name: Challenge.name, schema: ChallengeSchema },
     ]),
   ],

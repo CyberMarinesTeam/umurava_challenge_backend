@@ -35,7 +35,6 @@ export class ParticipantsService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     // Check if the user is already participating
     const existingParticipant = await this.participantModel.findOne({
       userId,
@@ -46,9 +45,11 @@ export class ParticipantsService {
         'User is already participating in this challenge',
       );
     }
-
     // Create a new participant entry
-    const participant = new this.participantModel({ userId, challengeId });
-    return participant.save();
+    const participant = await this.participantModel.create({
+      user: userId,
+      challenge: challengeId,
+    });
+    return participant;
   }
 }
