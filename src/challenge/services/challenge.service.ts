@@ -39,11 +39,11 @@ export class ChallengeService {
   }
 
   async getAllChallenges(): Promise<Challenge[]> {
-    const challenges = await this.challengeModel.find();
+    const challenges = await this.challengeModel.find().lean();
     if (!challenges || challenges.length == 0) {
       throw new NotFoundException('Challenges data not found!');
     }
-    return challenges;
+    return JSON.parse(JSON.stringify(challenges)); // Deeply convert to plain objects
   }
 
   async getChallenge(challengeId: string): Promise<Challenge> {

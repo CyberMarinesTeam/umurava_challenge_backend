@@ -14,7 +14,7 @@ import { Model } from 'mongoose';
 @WebSocketGateway({ cors: '*' })
 export class NotificationGateway {
   constructor(
-    @InjectModel('Notification') private notificationModel: Model<Notification>,
+    @InjectModel(Notification.name) private notificationModel: Model<Notification>,
   ) {}
   @WebSocketServer()
   server: Server;

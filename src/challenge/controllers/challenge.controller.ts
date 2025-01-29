@@ -114,15 +114,19 @@ export class ChallengeController {
   @Get()
   async getChallenges(@Res() response) {
     try {
-      const Challenges = await this.challengeService.getAllChallenges();
+      const challenges = await this.challengeService.getAllChallenges();
+      const serializedChallenges = JSON.parse(JSON.stringify(challenges)); // Convert to plain objects
+
       return response.status(HttpStatus.OK).json({
         message: 'All Challenges data found successfully',
-        Challenges,
+        Challenges: serializedChallenges,
       });
     } catch (err: any) {
       return response.status(err.status).json(err.response);
     }
   }
+
+ 
 
   @ApiResponse({
     status: 201,
