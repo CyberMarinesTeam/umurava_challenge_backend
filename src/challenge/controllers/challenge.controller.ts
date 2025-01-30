@@ -120,20 +120,24 @@ export class ChallengeController {
   @Get()
   async getChallenges(@Res() response) {
     try {
+
       const Challenges = await this.challengeService.getAllChallenges();
       await this.cacheManager.set(
         'challenges',
         JSON.parse(JSON.stringify(Challenges)),
       );
+
       return response.status(HttpStatus.OK).json({
         message: 'All Challenges data found successfully',
-        Challenges,
+        Challenges: Challenges,
       });
     } catch (err: any) {
       return response.status(err.status).json(err.response);
     }
   }
 
+ 
+
   @ApiResponse({
     status: 201,
     type: CreateChallengeDto,
@@ -141,9 +145,9 @@ export class ChallengeController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @UseInterceptors(CacheInterceptor)
-  @Get('open')
-  async findOpenChallenges() {
-    return this.challengeService.getOpenChallenges();
+  @Get('open/:daysAgo')
+  async findOpenChallenges(@Param('daysAgo') daysAgo: number) {
+    return this.challengeService.getOpenChallenges(daysAgo);
   }
 
   @UseGuards(AuthGuard)
@@ -154,9 +158,9 @@ export class ChallengeController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @UseInterceptors(CacheInterceptor)
-  @Get('ongoing')
-  async findOngoingChallenges() {
-    return this.challengeService.getOngoingChallenges();
+  @Get('ongoing/:daysAgo')
+  async findOngoingChallenges(@Param('daysAgo') daysAgo: number) {
+    return this.challengeService.getOngoingChallenges(daysAgo);
   }
 
   @UseGuards(AuthGuard)
@@ -167,9 +171,9 @@ export class ChallengeController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @UseInterceptors(CacheInterceptor)
-  @Get('completed')
-  async findCompletedChallenges() {
-    return this.challengeService.getCompletedChallenges();
+  @Get('completed/:daysAgo')
+  async findCompletedChallenges(@Param('daysAgo') daysAgo: number) {
+    return this.challengeService.getCompletedChallenges(daysAgo);
   }
 
   @UseGuards(AuthGuard)
