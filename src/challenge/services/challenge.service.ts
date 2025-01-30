@@ -13,27 +13,36 @@ export class ChallengeService {
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
-  async getChallengesByStatus(status: string): Promise<Challenge[]> {
-    const challenges = await this.challengeModel.find({ status }).exec();
-
+  async getChallengesByDaysAndStatus(daysAgo: number, status: string): Promise<Challenge[]> {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - daysAgo); // Calculate date X days ago
+  
+    const challenges = await this.challengeModel
+      .find({
+        status,
+        createdAt: { $gte: startDate }, // Filter challenges created within the specified timeframe
+      })
+      .exec();
+  
     if (!challenges || challenges.length === 0) {
-      throw new NotFoundException(`No challenges found with status: ${status}`);
+      throw new NotFoundException(`No ${status} challenges found in the last ${daysAgo} days.`);
     }
+  
+    return challenges;
+  }
+  
+  async getOpenChallenges(daysAgo: number): Promise<Challenge[]> {
+    const challenges = await this.getChallengesByDaysAndStatus(daysAgo,'open');
     return challenges;
   }
 
-  async getOpenChallenges(): Promise<Challenge[]> {
-    const challenges = await this.getChallengesByStatus('open');
+  async getOngoingChallenges(daysAgo: number): Promise<Challenge[]> {
+    const challenges = await this.getChallengesByDaysAndStatus(daysAgo,'ongoing');
     return challenges;
   }
 
-  async getOngoingChallenges(): Promise<Challenge[]> {
-    const challenges = await this.getChallengesByStatus('ongoing');
-    return challenges;
-  }
-
-  async getCompletedChallenges(): Promise<Challenge[]> {
-    const challenges = await this.getChallengesByStatus('completed');
+  async getCompletedChallenges(daysAgo: number): Promise<Challenge[]> {
+    const challenges = await this.getChallengesByDaysAndStatus(daysAgo,'completed');
     return challenges;
   }
 

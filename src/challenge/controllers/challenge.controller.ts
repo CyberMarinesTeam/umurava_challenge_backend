@@ -141,9 +141,9 @@ export class ChallengeController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @UseInterceptors(CacheInterceptor)
-  @Get('open')
-  async findOpenChallenges() {
-    return this.challengeService.getOpenChallenges();
+  @Get('open/:daysAgo')
+  async findOpenChallenges(@Param('daysAgo') daysAgo: number) {
+    return this.challengeService.getOpenChallenges(daysAgo);
   }
 
   @UseGuards(AuthGuard)
@@ -154,9 +154,9 @@ export class ChallengeController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @UseInterceptors(CacheInterceptor)
-  @Get('ongoing')
-  async findOngoingChallenges() {
-    return this.challengeService.getOngoingChallenges();
+  @Get('ongoing/:daysAgo')
+  async findOngoingChallenges(@Param('daysAgo') daysAgo: number) {
+    return this.challengeService.getOngoingChallenges(daysAgo);
   }
 
   @UseGuards(AuthGuard)
@@ -167,9 +167,9 @@ export class ChallengeController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @UseInterceptors(CacheInterceptor)
-  @Get('completed')
-  async findCompletedChallenges() {
-    return this.challengeService.getCompletedChallenges();
+  @Get('completed/:daysAgo')
+  async findCompletedChallenges(@Param('daysAgo') daysAgo: number) {
+    return this.challengeService.getCompletedChallenges(daysAgo);
   }
 
   @UseGuards(AuthGuard)
