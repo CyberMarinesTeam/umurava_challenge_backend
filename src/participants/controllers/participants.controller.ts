@@ -1,4 +1,4 @@
-import { Controller, Post, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Param, UseGuards, Get } from '@nestjs/common';
 import { ParticipantsService } from '../services/participants.service';
 import { Participant } from '../models/participants.model';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
@@ -14,5 +14,15 @@ export class ParticipantsController {
     @Param('challengeId') challengeId: string,
   ): Promise<Participant> {
     return await this.participantsService.startChallenge(userId, challengeId);
+  }
+  @Get(':userId/:status')
+  async getChallengesByUserWithStatus(
+    @Param('userId') userId: string,
+    @Param('status') status: string,
+  ) {
+    return this.participantsService.getChallengesByUserWithStatus(
+      userId,
+      status,
+    );
   }
 }
