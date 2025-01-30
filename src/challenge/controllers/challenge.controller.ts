@@ -47,19 +47,23 @@ export class ChallengeController {
     type: CreateChallengeResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Post()
+  @Post(':id')
   async createChallenge(
     @Res() response,
     @Body() createChallengeDto: CreateChallengeDto,
-    @Body() userId: string,
+    @Param(':id') id: string,
   ) {
     try {
       const newChallenge =
         await this.challengeService.createChallenge(createChallengeDto);
-      await this.notificationGateway.sendNotification(
-        userId,
-        'Challenge has been created successfully',
-      );
+      try {
+        await this.notificationGateway.sendNotification(
+          id,
+          'Challenge has been created successfully',
+        );
+      } catch (error) {
+        console.log(error);
+      }
       return response.status(HttpStatus.CREATED).json({
         message: 'Challenge has been created successfully',
         newChallenge,
@@ -195,17 +199,12 @@ export class ChallengeController {
     type: DeleteChallengeIdResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Delete('/:id/:userId')
-  async deleteChallenge(
-    @Res() response,
-    @Param('id') challengeId: string,
-    @Param('userId') userId: string,
-  ) {
+  @Delete('/:id')
+  async deleteChallenge(@Res() response, @Param('id') challengeId: string) {
     try {
       const deletedChallenge =
         await this.challengeService.deleteChallenge(challengeId);
-      await this.notificationGateway.sendNotification(
-        userId,
+      await this.notificationGateway.BroadCastMessage(
         'Challenge deleted successfully',
       );
       return response.status(HttpStatus.OK).json({
