@@ -13,6 +13,7 @@ import {
   Inject,
   BadRequestException,
   ParseIntPipe,
+  ExecutionContext,
 } from '@nestjs/common';
 import { ChallengeService } from '../services/challenge.service';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
@@ -41,7 +42,7 @@ export class ChallengeController {
     private readonly challengeService: ChallengeService,
     private readonly notificationGateway: NotificationGateway,
   ) {}
-
+  
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleEnum.ADMIN)
   @ApiResponse({
@@ -49,19 +50,25 @@ export class ChallengeController {
     type: CreateChallengeResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Post()
+  @Post(':id')
   async createChallenge(
     @Res() response,
     @Body() createChallengeDto: CreateChallengeDto,
-    @Body() userId: string,
+    @Param(':id') id: string,
   ) {
+
+    
     try {
       const newChallenge =
         await this.challengeService.createChallenge(createChallengeDto);
-      await this.notificationGateway.sendNotification(
-        userId,
-        'Challenge has been created successfully',
-      );
+      try {
+        await this.notificationGateway.sendNotification(
+          id,
+          'Challenge has been created successfully',
+        );
+      } catch (error) {
+        console.log(error);
+      }
       return response.status(HttpStatus.CREATED).json({
         message: 'Challenge has been created successfully',
         newChallenge,
@@ -133,7 +140,6 @@ export class ChallengeController {
     }
   }
 
-
   // get challenges in open state
   @ApiResponse({
     status: 201,
@@ -141,7 +147,6 @@ export class ChallengeController {
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseInterceptors(CacheInterceptor)
   @Get('open/:daysAgo')
   async findOpenChallenges(@Param('daysAgo') daysAgo: number) {
     const DaysChallenges =
@@ -151,9 +156,8 @@ export class ChallengeController {
       JSON.parse(JSON.stringify(DaysChallenges)),
     );
 
-    return DaysChallenges
+    return DaysChallenges;
   }
-
 
   // get challenges in ongoing state
   @UseGuards(AuthGuard)
@@ -163,7 +167,6 @@ export class ChallengeController {
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseInterceptors(CacheInterceptor)
   @Get('ongoing/:daysAgo')
   async findOngoingChallenges(@Param('daysAgo', ParseIntPipe) daysAgo: number) {
     if (daysAgo < 0) {
@@ -176,9 +179,8 @@ export class ChallengeController {
       JSON.parse(JSON.stringify(DaysChallenges)),
     );
 
-    return DaysChallenges
+    return DaysChallenges;
   }
-
 
   // Get completed challenges in days you want
   @UseGuards(AuthGuard, RolesGuard)
@@ -234,20 +236,22 @@ export class ChallengeController {
     type: DeleteChallengeIdResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  // @Delete('/:id/:userId')
   @Delete('/:id')
-  async deleteChallenge(
-    @Res() response,
-    @Param('id') challengeId: string,
-    // @Param('userId') userId: string,
-  ) {
+  async deleteChallenge(@Res() response, @Param('id') challengeId: string) {
     try {
       const deletedChallenge =
         await this.challengeService.deleteChallenge(challengeId);
-      // await this.notificationGateway.sendNotification(
-      //   userId,
-      //   'Challenge deleted successfully',
-      // );
+      await this.notificationGateway.BroadCastMessage(
+        'Challenge deleted successfully',
+      );
+
+      // Invalidate all relevant caches
+      await this.cacheManager.del('challenges'); // All challenges
+      await this.cacheManager.del(`open_challenges_*`); // Open challenges
+      await this.cacheManager.del(`ongoing_challenges_*`); // Ongoing challenges
+      await this.cacheManager.del(`completed_challenges_*`); // Completed challenges
+      await this.cacheManager.del(`challenges_${challengeId}`); // Specific challenge
+
       return response.status(HttpStatus.OK).json({
         message: 'Challenge deleted successfully',
         deletedChallenge,
