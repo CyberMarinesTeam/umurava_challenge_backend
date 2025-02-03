@@ -42,7 +42,7 @@ export class ChallengeController {
     private readonly challengeService: ChallengeService,
     private readonly notificationGateway: NotificationGateway,
   ) {}
-  
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleEnum.ADMIN)
   @ApiResponse({
@@ -56,8 +56,6 @@ export class ChallengeController {
     @Body() createChallengeDto: CreateChallengeDto,
     @Param(':id') id: string,
   ) {
-
-    
     try {
       const newChallenge =
         await this.challengeService.createChallenge(createChallengeDto);
@@ -94,14 +92,22 @@ export class ChallengeController {
   @Put('/:id')
   async updateChallenge(
     @Res() response,
+<<<<<<< HEAD
     @Param('id') studentId: string,
+=======
+    @Param('id') id: string,
+>>>>>>> ed181c3c74bc1a1a9ed5fca938e82a98a7010a37
     @Body() updateChallengeDto: UpdateChallengeDto,
     @Body() userId: string,
   ) {
     
     try {
       const Challenge = await this.challengeService.updateChallenge(
+<<<<<<< HEAD
         studentId,
+=======
+        id,
+>>>>>>> ed181c3c74bc1a1a9ed5fca938e82a98a7010a37
         updateChallengeDto,
       );
       await this.notificationGateway.sendNotification(

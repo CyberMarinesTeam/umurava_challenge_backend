@@ -35,6 +35,7 @@ export class AuthController {
   @ApiCreatedResponse({ type: AuthEntity })
   @Post('signup')
   signup(@Body() createUserDto: CreateAuthDto) {
+    console.log(createUserDto);
     return this.authService.signup(createUserDto);
   }
 

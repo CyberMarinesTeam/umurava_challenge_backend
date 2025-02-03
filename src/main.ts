@@ -20,7 +20,7 @@ async function bootstrap() {
 
   app.enableCors(corsOptions);
   app.useGlobalPipes(new ValidationPipe());
-
+  app.enableCors();
   const options = new DocumentBuilder()
     .setTitle('Umurava Skills Challenge API Documentation')
     .setDescription('Made by CyberMarineTeam')
