@@ -30,6 +30,7 @@ export class AuthController {
   async login(@Body() loginBodyDto: LoginBodyDto, @Request() req) {
     return await this.authService.login(loginBodyDto);
   }
+
   @ApiBody({ type: AuthEntity })
   @ApiCreatedResponse({ type: AuthEntity })
   @Post('signup')

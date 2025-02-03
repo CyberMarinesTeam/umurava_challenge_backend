@@ -11,6 +11,9 @@ import {
   UseInterceptors,
   UseGuards,
   Inject,
+  BadRequestException,
+  ParseIntPipe,
+  ExecutionContext,
 } from '@nestjs/common';
 import { ChallengeService } from '../services/challenge.service';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
@@ -135,18 +138,26 @@ export class ChallengeController {
     }
   }
 
+  // get challenges in open state
   @ApiResponse({
     status: 201,
     type: CreateChallengeDto,
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseInterceptors(CacheInterceptor)
   @Get('open/:daysAgo')
   async findOpenChallenges(@Param('daysAgo') daysAgo: number) {
-    return this.challengeService.getOpenChallenges(daysAgo);
+    const DaysChallenges =
+      await this.challengeService.getOpenChallenges(daysAgo);
+    await this.cacheManager.set(
+      `open_challenges_${daysAgo}`,
+      JSON.parse(JSON.stringify(DaysChallenges)),
+    );
+
+    return DaysChallenges;
   }
 
+  // get challenges in ongoing state
   @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
@@ -154,36 +165,59 @@ export class ChallengeController {
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseInterceptors(CacheInterceptor)
   @Get('ongoing/:daysAgo')
-  async findOngoingChallenges(@Param('daysAgo') daysAgo: number) {
-    return this.challengeService.getOngoingChallenges(daysAgo);
+  async findOngoingChallenges(@Param('daysAgo', ParseIntPipe) daysAgo: number) {
+    if (daysAgo < 0) {
+      throw new BadRequestException('Please specify the days');
+    }
+    const DaysChallenges =
+      await this.challengeService.getOngoingChallenges(daysAgo);
+    await this.cacheManager.set(
+      `ongoing_challenges_${daysAgo}`,
+      JSON.parse(JSON.stringify(DaysChallenges)),
+    );
+
+    return DaysChallenges;
   }
 
-  @UseGuards(AuthGuard)
+  // Get completed challenges in days you want
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @ApiResponse({
     status: 201,
     type: CreateChallengeDto,
     isArray: true,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseInterceptors(CacheInterceptor)
   @Get('completed/:daysAgo')
   async findCompletedChallenges(@Param('daysAgo') daysAgo: number) {
-    return this.challengeService.getCompletedChallenges(daysAgo);
+    if (daysAgo < 0) {
+      throw new BadRequestException('Please specify the days');
+    }
+    const DaysChallenges =
+      await this.challengeService.getCompletedChallenges(daysAgo);
+    await this.cacheManager.set(
+      `completed_challenges_${daysAgo}`,
+      JSON.parse(JSON.stringify(DaysChallenges)),
+    );
+    return DaysChallenges;
   }
 
+  // get challenge by id
   @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     type: ChallengeIdResponse,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseInterceptors(CacheInterceptor)
   @Get('/:id')
   async getChallenge(@Res() response, @Param('id') challengeId: string) {
     try {
       const Challenge = await this.challengeService.getChallenge(challengeId);
+      await this.cacheManager.set(
+        `challenges_${challengeId}`,
+        JSON.parse(JSON.stringify(Challenge)),
+      );
       return response.status(HttpStatus.OK).json({
         message: 'Challenge found successfully',
         Challenge,
@@ -208,6 +242,14 @@ export class ChallengeController {
       await this.notificationGateway.BroadCastMessage(
         'Challenge deleted successfully',
       );
+
+      // Invalidate all relevant caches
+      await this.cacheManager.del('challenges'); // All challenges
+      await this.cacheManager.del(`open_challenges_*`); // Open challenges
+      await this.cacheManager.del(`ongoing_challenges_*`); // Ongoing challenges
+      await this.cacheManager.del(`completed_challenges_*`); // Completed challenges
+      await this.cacheManager.del(`challenges_${challengeId}`); // Specific challenge
+
       return response.status(HttpStatus.OK).json({
         message: 'Challenge deleted successfully',
         deletedChallenge,

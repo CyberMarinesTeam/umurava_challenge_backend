@@ -7,6 +7,8 @@ import { RolesGuard } from '../guards/role.guard';
 import { RoleEnum } from '../enums/role.enum';
 import { Roles } from '../guards/roles.decorator';
 
+// users controllers
+
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -19,11 +21,6 @@ export class UserController {
     return user;
   }
   
-  @ApiOkResponse({ type: AuthEntity, isArray: true })
-  @Get()
-  async getUsers() {
-    return this.userService.getUsers();
-  }
 
   // get participants 
   @UseGuards(AuthGuard, RolesGuard)
