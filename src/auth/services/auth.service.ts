@@ -44,14 +44,7 @@ export class AuthService {
   }
 
   async signup(createUserDto: CreateAuthDto) {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    console.log(createUserDto);
-=======
-    console.log(createUserDto, "want to signup")
->>>>>>> refs/remotes/origin/main
->>>>>>> ed181c3c74bc1a1a9ed5fca938e82a98a7010a37
+
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userService.create(createUserDto);
     return user;
@@ -62,21 +55,11 @@ export class AuthService {
       const { password, username, email, roles } = user;
       const ismatch = await bcrypt.compare(plainPassword, user.password);
       if (ismatch) {
-<<<<<<< HEAD
         return { id: user._id, email, username, roles , status: 200 };
-=======
-<<<<<<< HEAD
-        return { email, username, roles };
-      } else {
-        console.log('passwords not match');
-        throw new Error('passwords not match');
-=======
-        return { email, username, roles , status: 200 };
->>>>>>> ed181c3c74bc1a1a9ed5fca938e82a98a7010a37
       }else {
        console.log("passwords not match")
        throw new Error("passwords not match")
->>>>>>> refs/remotes/origin/main
+
       }
     } else {
       return null;

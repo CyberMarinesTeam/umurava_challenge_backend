@@ -56,7 +56,9 @@ export class ChallengeController {
     @Body() createChallengeDto: CreateChallengeDto,
     @Param(':id') id: string,
   ) {
+    console.log("creating", createChallengeDto);
     try {
+      // console.log("creating", createChallengeDto);
       const newChallenge =
         await this.challengeService.createChallenge(createChallengeDto);
       try {
@@ -92,29 +94,19 @@ export class ChallengeController {
   @Put('/:id')
   async updateChallenge(
     @Res() response,
-<<<<<<< HEAD
-    @Param('id') studentId: string,
-=======
     @Param('id') id: string,
->>>>>>> ed181c3c74bc1a1a9ed5fca938e82a98a7010a37
     @Body() updateChallengeDto: UpdateChallengeDto,
     @Body() userId: string,
   ) {
     
     try {
-      const Challenge = await this.challengeService.updateChallenge(
-<<<<<<< HEAD
-        studentId,
-=======
-        id,
->>>>>>> ed181c3c74bc1a1a9ed5fca938e82a98a7010a37
-        updateChallengeDto,
-      );
+      console.log("updating", updateChallengeDto);
+      const Challenge = await this.challengeService.updateChallenge( id, updateChallengeDto,);
       await this.notificationGateway.sendNotification(
         userId,
         'Challenge has been successfully updated',
       );
-      return response.status(HttpStatus.OK).json({
+       response.status(200).json({
         message: 'Challenge has been successfully updated',
         Challenge,
       });
