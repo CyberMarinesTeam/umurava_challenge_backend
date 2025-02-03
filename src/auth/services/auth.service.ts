@@ -29,7 +29,8 @@ export class AuthService {
       };
   
       return {
-        accessToken: this.jwtService.sign(payload), // Sign the payload
+        accessToken: this.jwtService.sign(payload),
+        status: 200, // Sign the payload
       };
     } else {
       throw new Error('Invalid credentials');
@@ -37,6 +38,7 @@ export class AuthService {
   }
   
   async signup(createUserDto: CreateAuthDto) {
+    console.log(createUserDto, "want to signup")
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userService.create(createUserDto);
     return user;
@@ -47,7 +49,7 @@ export class AuthService {
       const { password,username, email, roles } = user;
       const ismatch = await bcrypt.compare(plainPassword, user.password);
       if (ismatch) {
-        return { email, username, roles };
+        return { email, username, roles , status: 200 };
       }else {
        console.log("passwords not match")
        throw new Error("passwords not match")
