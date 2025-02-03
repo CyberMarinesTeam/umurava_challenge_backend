@@ -58,6 +58,9 @@ export class Challenge {
   requirements: string[];
 
   @Prop({ type: [String], required: true })
+  skills_needed: string[];
+
+  @Prop({ type: [String], required: true })
   product_design: string[];
 
   @Prop({ type: [String], required: true })
@@ -65,6 +68,9 @@ export class Challenge {
 
   @Prop({ required: true })
   category: string;
+  
+  @Prop({ required: true })
+  seniority_level: string;
 
   @Prop({ default: 'open' })
   status: string;

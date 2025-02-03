@@ -95,13 +95,14 @@ export class ChallengeController {
   async updateChallenge(
     @Res() response,
     @Param('id') studentId: string,
-    @Body() updateStudentDto: UpdateChallengeDto,
+    @Body() updateChallengeDto: UpdateChallengeDto,
     @Body() userId: string,
   ) {
+    
     try {
       const Challenge = await this.challengeService.updateChallenge(
         studentId,
-        updateStudentDto,
+        updateChallengeDto,
       );
       await this.notificationGateway.sendNotification(
         userId,
@@ -112,11 +113,11 @@ export class ChallengeController {
         Challenge,
       });
     } catch (err: any) {
-      return response.status(err.status).json(err.response);
+      return "Failed to update the challenge";
     }
   }
 
-  @UseGuards(AuthGuard)
+
   @ApiResponse({
     status: 201,
     type: GetChallengesResponse,
@@ -131,10 +132,7 @@ export class ChallengeController {
         JSON.parse(JSON.stringify(Challenges)),
       );
 
-      return response.status(HttpStatus.OK).json({
-        message: 'All Challenges data found successfully',
-        Challenges: Challenges,
-      });
+      return response.status(HttpStatus.OK).json(Challenges);
     } catch (err: any) {
       return response.status(err.status).json(err.response);
     }
@@ -206,7 +204,7 @@ export class ChallengeController {
   }
 
   // get challenge by id
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     type: ChallengeIdResponse,
@@ -221,7 +219,6 @@ export class ChallengeController {
         JSON.parse(JSON.stringify(Challenge)),
       );
       return response.status(HttpStatus.OK).json({
-        message: 'Challenge found successfully',
         Challenge,
       });
     } catch (err: any) {
