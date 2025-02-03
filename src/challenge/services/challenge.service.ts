@@ -71,7 +71,7 @@ export class ChallengeService {
   async updateChallenge(
     challengeId: string,
     updateChallengeData: UpdateChallengeDto,
-  ): Promise<Challenge> {
+  ){
     const existingChallenge = await this.challengeModel.findByIdAndUpdate(
       challengeId,
       updateChallengeData,

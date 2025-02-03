@@ -59,6 +59,14 @@ export class CreateChallengeDto {
   @IsArray()
   @IsString({ each: true })
   requirements: string[];
+  
+  @ApiProperty({
+    example: '[skills_1, skills_2, skills_3]',
+    required: true,
+  })
+  @IsArray()
+  @IsString({ each: true })
+  skills_needed: string[];
 
   @ApiProperty({
     example: '[product_design1, product_design2, product_design3, product_design4]',
@@ -83,4 +91,12 @@ export class CreateChallengeDto {
   @IsString()
   @IsNotEmpty()
   category: string;
+
+  @ApiProperty({
+    example: 'junior',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  seniority_level: string;
 }

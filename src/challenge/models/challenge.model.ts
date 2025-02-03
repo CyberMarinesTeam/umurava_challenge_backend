@@ -19,6 +19,8 @@ export class Challenge {
     requirements: string[],
     product_design: string[],
     deliverables: string[],
+    skills_needed: string[],
+    seniority_level:string
   ) {
     this.title = title;
     this.duration = duration;
@@ -32,6 +34,8 @@ export class Challenge {
     this.deliverables = deliverables;
     this.requirements = requirements;
     this.product_design = product_design;
+    this.skills_needed = skills_needed;
+    this.seniority_level = seniority_level
   }
   @Prop({ required: true })
   title: string;
@@ -58,6 +62,9 @@ export class Challenge {
   requirements: string[];
 
   @Prop({ type: [String], required: true })
+  skills_needed: string[];
+
+  @Prop({ type: [String], required: true })
   product_design: string[];
 
   @Prop({ type: [String], required: true })
@@ -65,6 +72,9 @@ export class Challenge {
 
   @Prop({ required: true })
   category: string;
+  
+  @Prop({ required: true })
+  seniority_level: string;
 
   @Prop({ default: 'open' })
   status: string;
