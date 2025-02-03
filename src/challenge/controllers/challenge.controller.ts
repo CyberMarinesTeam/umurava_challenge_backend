@@ -89,14 +89,14 @@ export class ChallengeController {
   @Put('/:id')
   async updateChallenge(
     @Res() response,
-    @Param('id') studentId: string,
-    @Body() updateStudentDto: UpdateChallengeDto,
+    @Param('id') id: string,
+    @Body() updateChallengeDto: UpdateChallengeDto,
     @Body() userId: string,
   ) {
     try {
       const Challenge = await this.challengeService.updateChallenge(
-        studentId,
-        updateStudentDto,
+        id,
+        updateChallengeDto,
       );
       await this.notificationGateway.sendNotification(
         userId,
@@ -120,7 +120,6 @@ export class ChallengeController {
   @Get()
   async getChallenges(@Res() response) {
     try {
-
       const Challenges = await this.challengeService.getAllChallenges();
       await this.cacheManager.set(
         'challenges',
@@ -135,8 +134,6 @@ export class ChallengeController {
       return response.status(err.status).json(err.response);
     }
   }
-
- 
 
   @ApiResponse({
     status: 201,

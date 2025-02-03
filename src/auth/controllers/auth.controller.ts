@@ -24,27 +24,27 @@ import { Roles } from '../guards/roles.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  
   @ApiCreatedResponse({ type: LoginResponseDto })
   @ApiBody({ type: LoginBodyDto })
   @Post('login')
- async login(@Body() loginBodyDto: LoginBodyDto, @Request() req) {
+  async login(@Body() loginBodyDto: LoginBodyDto, @Request() req) {
     return await this.authService.login(loginBodyDto);
   }
   @ApiBody({ type: AuthEntity })
   @ApiCreatedResponse({ type: AuthEntity })
   @Post('signup')
   signup(@Body() createUserDto: CreateAuthDto) {
+    console.log(createUserDto);
     return this.authService.signup(createUserDto);
   }
 
-@UseGuards(AuthGuard, RolesGuard)
-@Roles(RoleEnum.TALENT)
-@Get('admin')
-getAdminRoute(@Request() req) {
-  return { 
-    message: 'This route is for ADMIN only!',
-    user: req.user, // The authenticated user
-  };
-}
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.TALENT)
+  @Get('admin')
+  getAdminRoute(@Request() req) {
+    return {
+      message: 'This route is for ADMIN only!',
+      user: req.user, // The authenticated user
+    };
+  }
 }
