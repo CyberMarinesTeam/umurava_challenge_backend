@@ -20,6 +20,10 @@ export class Participant {
     required: true,
   })
   challenge: MongooseSchema.Types.ObjectId;
+  @Prop({ required: false, default: true })
+  status: boolean;
+
+  
 }
 
 export const ParticipantSchema = SchemaFactory.createForClass(Participant);

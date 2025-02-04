@@ -13,6 +13,7 @@ export class ChallengeService {
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 async getChallengeByStatus(status:string){
+  
   return this.challengeModel.find({status})
 }
   async getChallengesByDaysAndStatus(daysAgo: number, status: string): Promise<Challenge[]> {
@@ -25,6 +26,7 @@ async getChallengeByStatus(status:string){
         createdAt: { $gte: startDate }, // Filter challenges created within the specified timeframe
       })
       .exec();
+    console.log(startDate); 
   
     if (!challenges || challenges.length === 0) {
       throw new NotFoundException(`No ${status} challenges found in the last ${daysAgo} days.`);
