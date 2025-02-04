@@ -8,7 +8,7 @@ export type ChallengeDocument = Challenge & Document;
 export class Challenge {
   constructor(
     title: string,
-    deadline: string,
+    deadline: Date,
     duration: number,
     moneyPrice: number,
     contactEmail: string,
@@ -41,7 +41,7 @@ export class Challenge {
   title: string;
 
   @Prop({ required: true })
-  deadline: string;
+  deadline: Date;
 
   @Prop({ required: true })
   duration: number;

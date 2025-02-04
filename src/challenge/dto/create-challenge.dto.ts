@@ -21,7 +21,7 @@ export class CreateChallengeDto {
     required: true,
   })
   @IsString()
-  deadline: string;
+  deadline: Date;
 
   @ApiProperty({
     example: '10',

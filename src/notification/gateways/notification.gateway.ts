@@ -15,7 +15,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Notification } from '../models/notification.model';
 import { Model } from 'mongoose';
 
-@WebSocketGateway({ cors: '*' })
+@WebSocketGateway({ cors:  '*' })
 export class NotificationGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -45,14 +45,16 @@ export class NotificationGateway
   }
 
   async sendNotification(userId: string, message: string) {
+    for (const client of this.clients.values()) {
+      console.log('Sending notification to client:', userId);
+      client.emit('notification', message);
+    }
     await this.notificationModel.create({
       user: userId,
       message,
       isRead: false,
     });
-    for (const client of this.clients.values()) {
-      client.emit('notification', message);
-    }
+ 
   }
 
   @SubscribeMessage('read')
@@ -70,15 +72,13 @@ export class NotificationGateway
     }
   }
 
-  @SubscribeMessage('broadcast')
+  // @SubscribeMessage('broadcast')
   async BroadCastMessage(@MessageBody() message: string) {
+    this.server.emit('broadcast-message', message);
     const broadcastNotification = await this.notificationModel.create({
       message,
       isRead: false,
     });
     console.log('broadcast ', message);
-    if (broadcastNotification) {
-      this.server.emit('broadcast-message', message);
-    }
   }
 }

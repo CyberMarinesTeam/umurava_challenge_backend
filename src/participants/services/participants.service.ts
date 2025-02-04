@@ -20,6 +20,15 @@ export class ParticipantsService {
     @InjectModel(Users.name) private userModel: Model<Users>,
   ) {}
 
+
+  
+  async getAllParticipants() {
+    return await this.participantModel.find();
+  }
+  getAllParticipantsByDays(daysAgo: number): Participant[] | PromiseLike<Participant[]> {
+    return  this.getParticipantsByDays(daysAgo)
+  }
+
   async startChallenge(
     userId: string,
     challengeId: string,
@@ -70,5 +79,26 @@ export class ParticipantsService {
       challenge: challengeId,
     });
     return found;
+  }
+
+
+
+  async getParticipantsByDays(daysAgo: number): Promise<Participant[]> {
+    console.log("calling participants for ", daysAgo, " days")
+    const startDate = new Date();
+
+    startDate.setDate(startDate.getDate() - daysAgo); // Calculate date X days ago
+  
+    const participants = await this.participantModel
+      .find({
+        createdAt: { $gte: startDate }, // Filter participants created within the specified timeframe
+      })
+      .exec();
+    console.log(startDate);
+    if (!participants || participants.length === 0) {
+      throw new NotFoundException(`No participants found in the last ${daysAgo} days.`);
+    }
+  
+    return participants;
   }
 }
