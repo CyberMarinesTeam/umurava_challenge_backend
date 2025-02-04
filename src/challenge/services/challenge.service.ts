@@ -12,7 +12,10 @@ export class ChallengeService {
     @InjectModel('Challenge') private challengeModel: Model<Challenge>,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
-
+async getChallengeByStatus(status:string){
+  
+  return this.challengeModel.find({status})
+}
   async getChallengesByDaysAndStatus(daysAgo: number, status: string): Promise<Challenge[]> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - daysAgo); // Calculate date X days ago

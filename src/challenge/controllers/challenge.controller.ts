@@ -256,4 +256,8 @@ export class ChallengeController {
       return response.status(404).json(err.response);
     }
   }
+  @Get("/admin/:status")
+  async getChallengesByStatus(@Param("status") status:string){
+    return this.challengeService.getChallengeByStatus(status);
+  }
 }
