@@ -65,6 +65,7 @@ export class ChallengeService {
     return existingChallenge;
   }
   async createChallenge(challengeData: any): Promise<Challenge> {
+    console.log(challengeData);
     const challenge = new this.challengeModel(challengeData);
     return challenge.save();
   }

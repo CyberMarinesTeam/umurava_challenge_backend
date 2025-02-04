@@ -5,8 +5,10 @@ import {
   IsEmail,
   IsNumber,
   IsArray,
+  IsDate,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 export class CreateChallengeDto {
   @ApiProperty({
     example: 'Project1',
@@ -20,14 +22,16 @@ export class CreateChallengeDto {
     example: '10/12/2023',
     required: true,
   })
-  @IsString()
+  @IsDate()
+  @Transform(({ value }) => new Date(value)) 
   deadline: Date;
 
   @ApiProperty({
     example: '10/12/2023',
     required: true,
   })
-  @IsString()
+  @IsDate()
+  @Transform(({ value }) => new Date(value)) 
   startingAt: Date;
 
   @ApiProperty({
@@ -105,7 +109,5 @@ export class CreateChallengeDto {
   })
   @IsString()
   @IsNotEmpty()
-  seniority_level: string;
-
-  
+  seniority_level: string;  
 }
