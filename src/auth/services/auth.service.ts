@@ -54,6 +54,7 @@ export class AuthService {
       const { password, username, email, roles } = user;
       const ismatch = await bcrypt.compare(plainPassword, user.password);
       if (ismatch) {
+
         return { id: user._id, email, username, roles, status: 200 };
       } else {
         console.log('passwords not match');
