@@ -24,6 +24,13 @@ export class CreateChallengeDto {
   deadline: Date;
 
   @ApiProperty({
+    example: '10/12/2023',
+    required: true,
+  })
+  @IsString()
+  startingAt: Date;
+
+  @ApiProperty({
     example: '10',
     required: true,
   })
@@ -99,4 +106,6 @@ export class CreateChallengeDto {
   @IsString()
   @IsNotEmpty()
   seniority_level: string;
+
+  
 }

@@ -78,18 +78,22 @@ export class Challenge {
 
   @Prop({ default: 'open' })
   status: string;
+
+  @Prop({required:true, type: Date})
+  startingAt: Date;
+  
 }
 
 export const ChallengeSchema = SchemaFactory.createForClass(Challenge);
 
 ChallengeSchema.virtual('./').get(function (this: ChallengeDocument) {
   const now = moment();
-  const createdAt = moment(this.createdAt as Date);
-  const endDate = createdAt.clone().add(this.duration, 'days');
+  const startingAt = moment(this.startingAt as Date);
+  const endDate = startingAt.clone().add(this.duration, 'days');
 
-  if (now.isBefore(createdAt)) {
+  if (now.isBefore(startingAt)) {
     return 'open';
-  } else if (now.isSameOrAfter(createdAt) && now.isBefore(endDate)) {
+  } else if (now.isSameOrAfter(startingAt) && now.isBefore(endDate)) {
     return 'ongoing';
   } else if (now.isSameOrAfter(endDate)) {
     return 'completed';
