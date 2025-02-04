@@ -53,9 +53,8 @@ export class ParticipantsService {
     return participant;
   }
   async getChallengesByUserWithStatus(userId: string, status: string) {
-
     const challenges = await this.participantModel
-      .find({ user: userId})
+      .find({ user: userId })
       .populate({
         path: 'challenge',
         match: { status },
@@ -64,5 +63,12 @@ export class ParticipantsService {
     return challenges
       .filter((participant) => participant.challenge !== null)
       .map((participant) => participant.challenge);
+  }
+  async getStatus(userId: string, challengeId: string) {
+    const found = await this.participantModel.findOne({
+      user: userId,
+      challenge: challengeId,
+    });
+    return found;
   }
 }
