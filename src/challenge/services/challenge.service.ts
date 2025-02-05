@@ -26,7 +26,6 @@ async getChallengeByStatus(status:string){
         createdAt: { $gte: startDate }, // Filter challenges created within the specified timeframe
       })
       .exec();
-    console.log(startDate); 
   
     if (!challenges || challenges.length === 0) {
       throw new NotFoundException(`No ${status} challenges found in the last ${daysAgo} days.`);
@@ -68,7 +67,6 @@ async getChallengeByStatus(status:string){
     return existingChallenge;
   }
   async createChallenge(challengeData: any): Promise<Challenge> {
-    console.log(challengeData);
     const challenge = new this.challengeModel(challengeData);
     return challenge.save();
   }
