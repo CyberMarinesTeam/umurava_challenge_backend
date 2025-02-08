@@ -33,6 +33,22 @@ async getChallengeByStatus(status:string){
   
     return challenges;
   }
+  async getChallengesByDays(daysAgo: number): Promise<Challenge[]> {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - daysAgo); // Calculate date X days ago
+  
+    const challenges = await this.challengeModel
+      .find({
+        createdAt: { $gte: startDate }, // Filter challenges created within the specified timeframe
+      })
+      .exec();
+  
+    if (!challenges || challenges.length === 0) {
+      throw new NotFoundException(`No  challenges found in the last ${daysAgo} days.`);
+    }
+  
+    return challenges;
+  }
   
   async getOpenChallenges(daysAgo: number): Promise<Challenge[]> {
     const challenges = await this.getChallengesByDaysAndStatus(daysAgo,'open');
@@ -49,8 +65,15 @@ async getChallengeByStatus(status:string){
     return challenges;
   }
 
+  async getAllChallengesByDays(daysAgo: number): Promise<Challenge[]> {
+    const challenges = await this.getChallengesByDays(daysAgo);
+    if (!challenges || challenges.length == 0) {
+      throw new NotFoundException('Challenges data not found!');
+    }
+    return JSON.parse(JSON.stringify(challenges)); // Deeply convert to plain objects
+  }
   async getAllChallenges(): Promise<Challenge[]> {
-    const challenges = await this.challengeModel.find().lean();
+    const challenges = await this.challengeModel.find().exec();
     if (!challenges || challenges.length == 0) {
       throw new NotFoundException('Challenges data not found!');
     }

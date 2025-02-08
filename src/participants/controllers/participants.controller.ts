@@ -22,7 +22,6 @@ export class ParticipantsController {
     if(!participants || participants.length == 0) {
       return  "not parcipant found Currently"
     }
-    console.log(participants)
     return participants;
   }
   // @UseGuards(AuthGuard) // Protect the route with authentication
@@ -31,7 +30,6 @@ export class ParticipantsController {
     @Param('userId') userId: string,
     @Param('challengeId') challengeId: string,
   ): Promise<Participant> {
-    console.log('challenge start working');
     return await this.participantsService.startChallenge(userId, challengeId);
   }
 

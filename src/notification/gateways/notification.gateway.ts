@@ -45,19 +45,18 @@ export class NotificationGateway
   }
 
   async sendNotification(userId: string, message: string) {
-    for (const client of this.clients.values()) {
-      console.log('Sending notification to client:', userId);
-      client.emit('notification', message);
-    }
     await this.notificationModel.create({
       user: userId,
       message,
       isRead: false,
     });
- 
+
+    for (const client of this.clients.values()) {
+      client.emit('notification', message);
+    } 
   }
 
-  @SubscribeMessage('read')
+  @SubscribeMessage('mark-notifications-read')
   async notificationRead(@ConnectedSocket() client: Socket) {
     const updated = await this.notificationModel.updateMany(
       {},
@@ -72,9 +71,9 @@ export class NotificationGateway
     }
   }
 
-  // @SubscribeMessage('broadcast')
+  @SubscribeMessage('broadcast-message')
   async BroadCastMessage(@MessageBody() message: string) {
-    this.server.emit('broadcast-message', message);
+    this.server.emit('notification', message);
     const broadcastNotification = await this.notificationModel.create({
       message,
       isRead: false,

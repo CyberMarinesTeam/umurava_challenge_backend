@@ -83,9 +83,7 @@ export class ParticipantsService {
 
 
 
-  async getParticipantsByDays(daysAgo: number): Promise<Participant[]> {
-    console.log("Calling participants for", daysAgo, "days");
-    
+  async getParticipantsByDays(daysAgo: number): Promise<Participant[]> {    
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - daysAgo); // Calculate date X days ago
   

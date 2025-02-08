@@ -70,7 +70,7 @@ export class ChallengeController {
       } catch (error) {
         console.log(error);
       }
-      return response.status(HttpStatus.CREATED).json({
+      return response.status(201).json({
         message: 'Challenge called ' + newChallenge.title + ' has been created successfully',
         newChallenge,
       });
@@ -131,9 +131,30 @@ export class ChallengeController {
         JSON.parse(JSON.stringify(Challenges)),
       );
 
-      return response.status(HttpStatus.OK).json(Challenges);
+      return response.status(200).json(Challenges);
     } catch (err: any) {
-      return response.status(err.status).json(err.response);
+      return response.status(403).json(err.response);
+    }
+  }
+
+
+  @ApiResponse({
+    status: 201,
+    type: GetChallengesResponse,
+  })
+  @ApiResponse({ status: 403, description: 'forbidden' })
+  @Get('total/:daysAgo')
+  async getChallengesByDays(@Param('daysAgo') daysAgo: number,  @Res() response) {
+    try {
+      const Challenges = await this.challengeService.getAllChallengesByDays(daysAgo);
+      await this.cacheManager.set(
+        'challenges',
+        JSON.parse(JSON.stringify(Challenges)),
+      );
+
+      return response.status(200).json(Challenges);
+    } catch (err: any) {
+      return response.status(403).json(err.response);
     }
   }
 
@@ -217,11 +238,11 @@ export class ChallengeController {
         `challenges_${challengeId}`,
         JSON.parse(JSON.stringify(Challenge)),
       );
-      return response.status(HttpStatus.OK).json({
+      return response.status(200).json({
         Challenge,
       });
     } catch (err: any) {
-      return response.status(404).json(err.response);
+      return response.status(403).json(err.response);
     }
   }
 
@@ -248,12 +269,12 @@ export class ChallengeController {
       await this.cacheManager.del(`completed_challenges_*`); // Completed challenges
       await this.cacheManager.del(`challenges_${challengeId}`); // Specific challenge
 
-      return response.status(HttpStatus.OK).json({
+      return response.status(200).json({
         message: 'Challenge called ' + deletedChallenge.title + ' has been deleted',
         deletedChallenge,
       });
     } catch (err: any) {
-      return response.status(404).json(err.response);
+      return response.status(403).json(err.response);
     }
   }
   @Get("/admin/:status")
