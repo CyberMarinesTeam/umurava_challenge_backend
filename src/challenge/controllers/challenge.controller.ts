@@ -56,13 +56,12 @@ export class ChallengeController {
     @Body() createChallengeDto: CreateChallengeDto,
     @Param('id') id: string,
   ) {
-    
     try {
       // console.log("creating", createChallengeDto);
       const newChallenge =
         await this.challengeService.createChallenge(createChallengeDto);
       try {
-        console.log("id", id);
+        console.log('id', id);
         await this.notificationGateway.sendNotification(
           id,
           `Challenge called ${newChallenge.title} has been created successfully`,
@@ -71,13 +70,16 @@ export class ChallengeController {
         console.log(error);
       }
       return response.status(201).json({
-        message: 'Challenge called ' + newChallenge.title + ' has been created successfully',
+        message:
+          'Challenge called ' +
+          newChallenge.title +
+          ' has been created successfully',
         newChallenge,
       });
     } catch (err: any) {
       console.log(err);
 
-      return response.status(HttpStatus.BAD_REQUEST).json({
+      return response.status(400).json({
         statusCode: 400,
         message: 'Error: Challenge not created!',
         error: 'Bad Request',
@@ -99,23 +101,21 @@ export class ChallengeController {
     @Param('userId') userId: string,
     @Body() updateChallengeDto: UpdateChallengeDto,
   ) {
-    
     try {
-      const Challenge = await this.challengeService.updateChallenge( id, updateChallengeDto,);
-      console.log("sending notification")
+      const Challenge = await this.challengeService.updateChallenge(
+        id,
+        updateChallengeDto,
+      );
+      console.log('sending notification');
       await this.notificationGateway.sendNotification(
         userId,
         `Challenge called ${Challenge.title} has been successfully updated`,
       );
-       response.status(200).json({
-        message: 'Challenge has been successfully updated',
-        Challenge,
-      });
+      response.status(200).json(Challenge);
     } catch (err: any) {
-      return "Failed to update the challenge";
+      return 'Failed to update the challenge';
     }
   }
-
 
   @ApiResponse({
     status: 201,
@@ -137,16 +137,19 @@ export class ChallengeController {
     }
   }
 
-
   @ApiResponse({
     status: 201,
     type: GetChallengesResponse,
   })
   @ApiResponse({ status: 403, description: 'forbidden' })
   @Get('total/:daysAgo')
-  async getChallengesByDays(@Param('daysAgo') daysAgo: number,  @Res() response) {
+  async getChallengesByDays(
+    @Param('daysAgo') daysAgo: number,
+    @Res() response,
+  ) {
     try {
-      const Challenges = await this.challengeService.getAllChallengesByDays(daysAgo);
+      const Challenges =
+        await this.challengeService.getAllChallengesByDays(daysAgo);
       await this.cacheManager.set(
         'challenges',
         JSON.parse(JSON.stringify(Challenges)),
@@ -238,9 +241,7 @@ export class ChallengeController {
         `challenges_${challengeId}`,
         JSON.parse(JSON.stringify(Challenge)),
       );
-      return response.status(200).json({
-        Challenge,
-      });
+      return response.status(200).json(Challenge);
     } catch (err: any) {
       return response.status(403).json(err.response);
     }
@@ -270,15 +271,16 @@ export class ChallengeController {
       await this.cacheManager.del(`challenges_${challengeId}`); // Specific challenge
 
       return response.status(200).json({
-        message: 'Challenge called ' + deletedChallenge.title + ' has been deleted',
+        message:
+          'Challenge called ' + deletedChallenge.title + ' has been deleted',
         deletedChallenge,
       });
     } catch (err: any) {
       return response.status(403).json(err.response);
     }
   }
-  @Get("/admin/:status")
-  async getChallengesByStatus(@Param("status") status:string){
+  @Get('/admin/:status')
+  async getChallengesByStatus(@Param('status') status: string) {
     return this.challengeService.getChallengeByStatus(status);
   }
 }

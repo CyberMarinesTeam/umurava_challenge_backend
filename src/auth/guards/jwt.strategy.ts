@@ -14,7 +14,7 @@ export class JwtStrategy  extends PassportStrategy(Strategy){
     
         const secretKey = configService.get<string>('JWT_SECRET_KEY');
         if(!secretKey) {
-            throw new Error('JWT_SECRET is not defined');
+            throw new Error('JWT_SECRET_KEY is not defined');
         }
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
